@@ -3,6 +3,7 @@ package com.example.mvpapplication
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.mvpapplication.data.model.User
 import com.example.mvpapplication.databinding.ItemRecipeBinding
 
@@ -31,9 +32,13 @@ class UserAdapter: RecyclerView.Adapter<UserAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: ItemRecipeBinding): RecyclerView.ViewHolder(binding.root) {
         fun setData(item: User) {
             with(binding) {
-                tvTitle.text = "${item.firstName} ${item.lastName}"
+                tvName.text = "${item.firstName} ${item.lastName}"
                 tvThumbnail.text = item.avatar
-                tvTimes.text = item.email
+                tvEmail.text = item.email
+                Glide
+                    .with(root.context)
+                    .load(item.avatar)
+                    .into(ivAvatar)
             }
         }
     }
