@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit
 
 class NetworkClient {
     companion object {
-        const val BASE_URL = "https://masak-apa.tomorisakura.vercel.app/api"
+        const val BASE_URL = "https://reqres.in/api"
         val client: OkHttpClient =
             OkHttpClient
                 .Builder()

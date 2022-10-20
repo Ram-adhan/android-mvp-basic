@@ -23,3 +23,11 @@ fun JSONObject.getBooleanData(key: String, default: Boolean): Boolean {
         default
     }
 }
+
+fun JSONObject.getIntData(key: String): Int {
+    return if (this.has(key)) {
+        this.getInt(key)
+    } else {
+        0
+    }
+}

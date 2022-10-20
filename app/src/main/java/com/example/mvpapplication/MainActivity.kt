@@ -1,14 +1,15 @@
 package com.example.mvpapplication
 
 import android.os.Bundle
-import android.widget.Toast
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.mvpapplication.data.model.Recipe
+import com.example.mvpapplication.data.model.User
 import com.example.mvpapplication.data.network.NetworkClient
 import com.example.mvpapplication.data.network.ResponseStatus
-import com.example.mvpapplication.data.network.api.RecipesApi
+import com.example.mvpapplication.data.network.api.ReqresApi
 import com.example.mvpapplication.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,8 +18,9 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val networkClient: NetworkClient = NetworkClient()
-    private val recipesApi: RecipesApi = RecipesApi()
-    private val adapter: RecipesAdapter by lazy { RecipesAdapter() }
+    private val api: ReqresApi = ReqresApi()
+    private val adapter: UserAdapter by lazy { UserAdapter() }
+    private val recipeLiveData = MutableLiveData<List<User>>(listOf())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,14 +33,21 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@MainActivity)
         }
 
+        recipeLiveData.observe(this) {
+            adapter.submitList(it)
+        }
+
         binding.btnAsyncCall.setOnClickListener {
             showProgress(true)
-            recipesApi.getRecipes {
-                when(it) {
-                    is ResponseStatus.Failed -> Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
-                    is ResponseStatus.Success -> {
-                        submitRecipesData(it.data)
+            api.getUserPagination {
+                when (it) {
+                    is ResponseStatus.SuccessPagination -> {
+                        recipeLiveData.postValue(it.data)
                     }
+                    is ResponseStatus.Failed -> {
+                        Log.e("MainActivity", it.message)
+                    }
+                    else -> {}
                 }
                 showProgress(false)
             }
@@ -57,12 +66,6 @@ class MainActivity : AppCompatActivity() {
     private fun showProgress(isShown: Boolean) {
         CoroutineScope(Dispatchers.Main).launch {
             binding.progressIndicator.isVisible = isShown
-        }
-    }
-
-    private fun submitRecipesData(data: List<Recipe>) {
-        CoroutineScope(Dispatchers.Main).launch {
-            adapter.submitList(data)
         }
     }
 }
