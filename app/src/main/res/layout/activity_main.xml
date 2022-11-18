@@ -64,6 +64,14 @@
                 android:background="@drawable/bg_input_text"
                 android:hint="@string/password" />
 
+            <TextView
+                android:id="@+id/tvErrorPassword"
+                android:layout_width="match_parent"
+                android:text="Password tidak sesuai"
+                android:textColor="@color/red"
+                android:visibility="invisible"
+                android:layout_height="wrap_content"/>
+
             <Button
                 android:id="@+id/btnLogin"
                 android:layout_width="match_parent"

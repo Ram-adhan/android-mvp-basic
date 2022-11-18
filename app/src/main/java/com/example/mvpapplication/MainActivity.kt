@@ -3,6 +3,7 @@ package com.example.mvpapplication
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.core.view.isInvisible
 import androidx.core.widget.doOnTextChanged
 import com.example.mvpapplication.databinding.ActivityMainBinding
 
@@ -35,15 +36,18 @@ class MainActivity : AppCompatActivity() {
         binding.btnLogin.isEnabled =
             binding.edtUsername.text.toString().isNotBlank()
                     && binding.edtPassword.text.toString().isNotBlank()
-                    && validatePassword()
+                    && isPasswordValid
     }
 
-    private fun validatePassword(): Boolean {
-        var isValid = binding.edtPassword.text.toString().contains("")
+    private val isPasswordValid: Boolean get() {
+        val passText = binding.edtPassword.text.toString()
 
-        if (!isValid) {
-            //tampilkan error message
-        }
+        val isValid = passText.contains("[a-z]".toRegex())
+                && passText.contains("[A-Z]".toRegex())
+                && passText.contains("[0-9]".toRegex())
+                && passText.length >= 8
+
+        binding.tvErrorPassword.isInvisible = isValid
 
         return isValid
     }
