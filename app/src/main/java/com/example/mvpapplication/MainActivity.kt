@@ -1,26 +1,29 @@
 package com.example.mvpapplication
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isInvisible
 import androidx.core.widget.doOnTextChanged
 import com.example.mvpapplication.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    private val TAG = MainActivity::class.simpleName
     private lateinit var binding: ActivityMainBinding
-    private val usernameText: String get() = binding.edtUsername.text.toString()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // inflate layout ke binding
         binding = ActivityMainBinding.inflate(layoutInflater)
-//        usernameText = binding.edtUsername.text.toString()
+        val page = RegisterPage()
 
         setContentView(binding.root)
 
         binding.btnLogin.setOnClickListener {
-            Toast.makeText(this, "OK", Toast.LENGTH_SHORT).show()
+//            startActivity(Intent(this, RegisterPage::class.java).putExtra(
+//                "key",
+//                intArrayOf(1, 2, 3)
+//            ))
         }
 
         binding.edtUsername.doOnTextChanged { _, _, _, _ ->
@@ -29,6 +32,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.edtPassword.doOnTextChanged { _, _, _, _ ->
             validate()
+        }
+
+        binding.tvForgotPass.setOnClickListener {
+            startRegisterActivity(this)
         }
     }
 
@@ -50,5 +57,37 @@ class MainActivity : AppCompatActivity() {
         binding.tvErrorPassword.isInvisible = isValid
 
         return isValid
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "activity onStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "activity onResume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.edtPassword.text.clear()
+        binding.edtUsername.text.clear()
+        Log.d(TAG, "activity onPause")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "activity onStop")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        Log.d(TAG, "activity onRestart")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "activity onDestroy")
     }
 }
