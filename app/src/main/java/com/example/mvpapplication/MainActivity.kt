@@ -1,7 +1,10 @@
 package com.example.mvpapplication
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isInvisible
 import androidx.core.widget.doOnTextChanged
@@ -20,10 +23,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnLogin.setOnClickListener {
-//            startActivity(Intent(this, RegisterPage::class.java).putExtra(
-//                "key",
-//                intArrayOf(1, 2, 3)
-//            ))
+            /*startActivity(
+                Intent(this, RegisterPage::class.java).putExtra(
+                "key",
+                intArrayOf(1, 2, 3)
+            ))*/
+
         }
 
         binding.edtUsername.doOnTextChanged { _, _, _, _ ->
@@ -35,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.tvForgotPass.setOnClickListener {
-            startRegisterActivity(this)
+            registerPage.launch(RegisterPage.getIntent(this))
         }
     }
 
@@ -57,6 +62,15 @@ class MainActivity : AppCompatActivity() {
         binding.tvErrorPassword.isInvisible = isValid
 
         return isValid
+    }
+
+    private val registerPage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == RESULT_OK) {
+            val intent = it.data ?: return@registerForActivityResult
+            val userName = intent.getStringExtra("user_data")
+
+            binding.edtUsername.setText(userName)
+        }
     }
 
     override fun onStart() {
