@@ -2,6 +2,7 @@ package com.example.mvpapplication
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import com.example.mvpapplication.databinding.ActivityMainBinding
@@ -16,7 +17,7 @@ class MainActivity : AppCompatActivity(), NewLoginFragment.LoginListener{
         setContentView(binding.root)
 
         supportFragmentManager.beginTransaction()
-            .replace(binding.fragmentContainer.id, NewLoginFragment(), NewLoginFragment.TAG)
+            .replace(binding.fragmentContainer.id, LoginFragment(), LoginFragment.TAG)
             .commit()
     }
 
@@ -32,10 +33,10 @@ class MainActivity : AppCompatActivity(), NewLoginFragment.LoginListener{
             .commit()
     }
 
-    private fun getLoginFragment(): NewLoginFragment? {
-        val fragment = supportFragmentManager.findFragmentByTag(NewLoginFragment.TAG)
+    private fun getLoginFragment(): LoginFragment? {
+        val fragment = supportFragmentManager.findFragmentByTag(LoginFragment.TAG)
         return if (fragment != null) {
-            fragment as NewLoginFragment
+            fragment as LoginFragment
         } else {
             null
         }

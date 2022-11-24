@@ -11,6 +11,15 @@ import com.example.mvpapplication.databinding.LayoutLoginBinding
 class LoginFragment: Fragment() {
     companion object {
         const val TAG = "LoginFragment"
+
+        fun newInstance(data: String): LoginFragment {
+            val fragment = LoginFragment()
+            val bundle = Bundle().apply {
+                putString("key", data)
+            }
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 
     private lateinit var binding: LayoutLoginBinding
@@ -30,6 +39,10 @@ class LoginFragment: Fragment() {
     ): View {
         binding = LayoutLoginBinding.inflate(inflater)
         return binding.root
+    }
+
+    fun typeToUsername(string: String) {
+        binding.edtUsername.setText(string)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
