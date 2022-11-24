@@ -38,5 +38,9 @@ class LoginFragment: Fragment() {
         binding.btnLogin.setOnClickListener {
             loginInterface?.onClickLogin()
         }
+
+        binding.tvForgotPass.setOnClickListener {
+            loginInterface?.onClickForgot()
+        }
     }
 }

@@ -6,11 +6,8 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import com.example.mvpapplication.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity(), LoginFragmentInterface {
+class MainActivity : AppCompatActivity(), LoginFragmentInterface, RegisterFragment.FragmentListener {
     private lateinit var binding: ActivityMainBinding
-    private val fragmentTransaction: FragmentTransaction by lazy {
-        supportFragmentManager.beginTransaction()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,8 +15,8 @@ class MainActivity : AppCompatActivity(), LoginFragmentInterface {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        fragmentTransaction
-            .add(binding.fragmentContainer.id, LoginFragment(), LoginFragment.TAG)
+        supportFragmentManager.beginTransaction()
+            .replace(binding.fragmentContainer.id, LoginFragment(), LoginFragment.TAG)
             .commit()
     }
 
@@ -28,6 +25,12 @@ class MainActivity : AppCompatActivity(), LoginFragmentInterface {
     }
 
     override fun onClickForgot() {
+        supportFragmentManager.beginTransaction()
+            .add(binding.fragmentContainer.id, RegisterFragment(), RegisterFragment.TAG)
+            .addToBackStack(null)
+            .commit()
+    }
 
+    override fun onClickConfirm() {
     }
 }
