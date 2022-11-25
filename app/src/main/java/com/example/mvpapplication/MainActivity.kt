@@ -7,7 +7,7 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import com.example.mvpapplication.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity(), NewLoginFragment.LoginListener{
+class MainActivity : AppCompatActivity(), LoginFragmentInterface{
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
