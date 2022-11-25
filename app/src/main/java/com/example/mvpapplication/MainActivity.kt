@@ -11,10 +11,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapterNotif: AdapterNotif
 
     private val listTransactionTitle = listOf(
-        "Transaksi Masuk",
-        "Transaksi Keluar",
-        "Transaksi Masuk",
-        "Transaksi Keluar",
+        ItemNotifModel("Transaksi Masuk", "14:30", "Ahmad Alfiansyah - 4434 5384 3478", "Rp. 150.000"),
+        ItemNotifModel("Transaksi Keluar", "14:35", "Ahmad A - 4434 5384 3478", "Rp. 20.000"),
+        ItemNotifModel("Transaksi Masuk", "14:40", "Ahmad Alfi - 4434 5384 3478", "Rp. 1.500.000"),
+        ItemNotifModel("Transaksi Keluar", "15:30", "Rizky Alfiansyah - 4434 5384 3478", "Rp. 150.000"),
+        ItemNotifModel("Transaksi Keluar", "15:30", "Rizky Alfiansyah - 4434 5384 3478", "Rp. 150.000"),
+        ItemNotifModel("Transaksi Keluar", "15:30", "Rizky Alfiansyah - 4434 5384 3478", "Rp. 150.000"),
+        ItemNotifModel("Transaksi Keluar", "15:30", "Rizky Alfiansyah - 4434 5384 3478", "Rp. 150.000"),
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

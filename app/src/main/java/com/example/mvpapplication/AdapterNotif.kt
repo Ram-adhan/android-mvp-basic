@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mvpapplication.databinding.ItemNotifBinding
 
-class AdapterNotif(private val data: MutableList<String> = mutableListOf()): RecyclerView.Adapter<AdapterNotif.ViewHolder>() {
+class AdapterNotif(private val data: MutableList<ItemNotifModel> = mutableListOf()): RecyclerView.Adapter<AdapterNotif.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -20,8 +20,11 @@ class AdapterNotif(private val data: MutableList<String> = mutableListOf()): Rec
     override fun getItemCount(): Int = data.size
 
     inner class ViewHolder(private val binding: ItemNotifBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bindItem(item: String) {
-            binding.tvTitle.text = item
+        fun bindItem(item: ItemNotifModel) {
+            binding.tvTitle.text = item.title
+            binding.tvTime.text = item.time
+            binding.tvAccountInfo.text = item.accountDetail
+            binding.tvTransactionAmount.text = item.transactionAmount
         }
     }
 }
