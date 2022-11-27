@@ -11,5 +11,20 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.profileInfo.apply {
+            topText = "Selamat Pagi,"
+            bottomText = "Viola Maulana"
+            setTextSize(topTextSize = 12f, bottomTextSize = 24f)
+            setTextColor(topColorId = R.color.white, bottomColorId = R.color.white)
+            setFontFamily(
+                topFontFamily = R.font.roboto_regular,
+                bottomFontFamily = R.font.roboto_medium
+            )
+        }
+
+        binding.cardProfile.apply {
+            setTextSize(topTextSize = 12f, bottomTextSize = 24f)
+        }
     }
 }

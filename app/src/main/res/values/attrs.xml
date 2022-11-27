@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ProfileCardComponent">
+        <attr name="topText" format="string" />
+        <attr name="bottomText" format="string" />
+        <attr name="topTextColor" format="color" />
+        <attr name="bottomTextColor" format="color" />
+        <attr name="topFontFamily" format="reference" />
+        <attr name="bottomFontFamily" format="reference" />
+    </declare-styleable>
+</resources>
