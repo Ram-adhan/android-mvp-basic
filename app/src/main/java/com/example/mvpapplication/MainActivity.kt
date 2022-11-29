@@ -1,5 +1,6 @@
 package com.example.mvpapplication
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -32,5 +33,15 @@ class MainActivity : AppCompatActivity() {
         binding.rvTransaction.adapter = adapterNotif
         binding.rvTransaction.layoutManager = layoutManager
 
+        adapterNotif.setOnCardClickListener(rvListener)
+
     }
+
+    private val rvListener: (accountDetail: String, transactionAmount: String) -> Unit =
+        { accountDetail, transactionAmount ->
+            startActivity(Intent(this, MainActivity2::class.java).apply {
+                putExtra("accountDetail", accountDetail)
+                putExtra("transactionAmount", transactionAmount)
+            })
+        }
 }
