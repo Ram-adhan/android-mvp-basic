@@ -30,6 +30,10 @@ class ProfileCardComponent @JvmOverloads constructor(
             binding.bottomText.text = field
         }
 
+    private var listener: ClickListener? = null
+
+    private var endIconListener: (() -> Unit)? = null
+
     init {
         binding = LayoutCardProfileBinding.inflate(LayoutInflater.from(context), this)
         val layoutParam = LayoutParams(binding.root.width, binding.root.height)
@@ -63,6 +67,12 @@ class ProfileCardComponent @JvmOverloads constructor(
 
             typedArray.recycle()
         }
+
+
+        binding.endIcon.setOnClickListener {
+            listener?.onClickEndIcon()
+            endIconListener?.invoke()
+        }
     }
 
     fun setTextSize(topTextSize: Float? = null, bottomTextSize: Float? = null) {
@@ -89,5 +99,17 @@ class ProfileCardComponent @JvmOverloads constructor(
         bottomFontFamily?.let {
             binding.bottomText.typeface = ResourcesCompat.getFont(context, it)
         }
+    }
+
+    fun setListener(listener: ClickListener) {
+        this.listener = listener
+    }
+
+    fun setEndIconListener(listener: () -> Unit) {
+        endIconListener = listener
+    }
+
+    interface ClickListener {
+        fun onClickEndIcon()
     }
 }
