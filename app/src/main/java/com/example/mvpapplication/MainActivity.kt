@@ -1,7 +1,7 @@
 package com.example.mvpapplication
 
 import android.os.Bundle
-import android.util.Log
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
@@ -39,17 +39,21 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnAsyncCall.setOnClickListener {
             showProgress(true)
-            api.getUserPagination {
-                when (it) {
-                    is ResponseStatus.SuccessPagination -> {
-                        recipeLiveData.postValue(it.data)
+            api.getUserPagination { response ->
+                CoroutineScope(Dispatchers.Main).launch {
+                    when(response) {
+                        is ResponseStatus.Success -> {
+                            adapter.submitList(response.data)
+                        }
+                        is ResponseStatus.Failed -> {
+                            AlertDialog.Builder(this@MainActivity)
+                                .setMessage(response.message)
+                                .create()
+                                .show()
+                        }
                     }
-                    is ResponseStatus.Failed -> {
-                        Log.e("MainActivity", it.message)
-                    }
-                    else -> {}
+                    showProgress(false)
                 }
-                showProgress(false)
             }
         }
 

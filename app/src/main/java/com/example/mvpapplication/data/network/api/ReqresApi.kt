@@ -39,6 +39,44 @@ class ReqresApi {
     }
 
     fun getUserPagination(pages: Int = 1, onResponse: (ResponseStatus<List<User>>) -> Unit) {
+//        val endpoint = "/users${if (pages > 1) pages else ""}"
+        val endpoint = "/unknown/23"
+        val request = NetworkClient.requestBuilder(endpoint)
+
+        NetworkClient
+            .client
+            .newCall(request)
+            .enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    onResponse.invoke(
+                        ResponseStatus.Failed(
+                            code = -1,
+                            message = e.message.toString(),
+                            throwable = e
+                        )
+                    )
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    if (response.isSuccessful) {
+                        val body = JSONObject(response.body?.string() ?: "")
+                        onResponse.invoke(
+                            ResponseStatus.Success(
+                                data = mapUsers(body),
+                                method = "GET",
+                                status = true
+                            )
+                        )
+                    } else {
+                        onResponse.invoke(
+                            ResponseStatus.Failed(response.code, "Something Went Wrong")
+                        )
+                    }
+                }
+            })
+    }
+
+    fun getUserPaginationBasic(pages: Int = 1, onResponse: (JSONObject?, Throwable?) -> Unit) {
         val endpoint = "/users${if (pages > 1) pages else ""}"
         val request = NetworkClient.requestBuilder(endpoint)
         NetworkClient
@@ -46,25 +84,17 @@ class ReqresApi {
             .newCall(request)
             .enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
-                    onResponse.invoke(ResponseStatus.Failed(1, e.message.toString(), e))
+                    onResponse.invoke(null, e)
                 }
 
                 override fun onResponse(call: Call, response: Response) {
                     if (response.isSuccessful) {
                         val body = JSONObject(response.body?.string() ?: "")
                         onResponse.invoke(
-                            ResponseStatus.SuccessPagination(
-                                page = body.getIntData("page"),
-                                perPage = body.getIntData("per_page"),
-                                total = body.getIntData("total"),
-                                totalPages = body.getIntData("total_pages"),
-                                data = mapUsers(body)
-                            )
+                            body, null
                         )
                     } else {
-                        onResponse.invoke(
-                            ResponseStatus.Failed(response.code, "Failed")
-                        )
+                        onResponse.invoke(null, Throwable("something went wrong"))
                     }
                 }
             })
