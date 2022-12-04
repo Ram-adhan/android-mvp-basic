@@ -9,9 +9,19 @@ import java.util.concurrent.TimeUnit
 class NetworkClient {
     companion object {
         const val BASE_URL = "https://reqres.in/api"
+        private val headerInterceptor: Interceptor = Interceptor {
+            val request = it.request().newBuilder()
+            request
+                .addHeader("Content-Type", "application/json")
+
+            return@Interceptor it.proceed(request.build())
+
+        }
+
         val client: OkHttpClient =
             OkHttpClient
                 .Builder()
+                .addInterceptor(headerInterceptor)
                 .addInterceptor(
                     HttpLoggingInterceptor().apply {
                         level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
@@ -21,7 +31,10 @@ class NetworkClient {
                 .connectTimeout(timeout = 2L, unit = TimeUnit.SECONDS)
                 .build()
 
-        fun requestBuilder(endpoint: String): Request = Request.Builder().url("$BASE_URL$endpoint").build()
+        fun requestBuilder(endpoint: String): Request.Builder =
+            Request
+                .Builder()
+                .url("$BASE_URL$endpoint")
     }
 
     fun getAsync(endpoint: String, onSuccess: (Response) -> Unit) {

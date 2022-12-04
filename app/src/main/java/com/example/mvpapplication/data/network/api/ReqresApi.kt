@@ -1,22 +1,23 @@
 package com.example.mvpapplication.data.network.api
 
+import com.example.mvpapplication.data.model.AddUserModel
+import com.example.mvpapplication.data.model.AddUserResponse
 import com.example.mvpapplication.data.model.User
 import com.example.mvpapplication.data.network.NetworkClient
 import com.example.mvpapplication.data.network.ResponseStatus
 import com.example.mvpapplication.data.network.getIntData
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.Response
+import okhttp3.*
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.IOException
 
 class ReqresApi {
+    private val usersEndpoint = "/users"
     fun getUser(onResponse: (ResponseStatus<User>) -> Unit) {
-        val endpoint = "/users"
         NetworkClient
             .client
             .newCall(
-                NetworkClient.requestBuilder(endpoint)
+                NetworkClient.requestBuilder(usersEndpoint).build()
             )
             .enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
@@ -39,10 +40,8 @@ class ReqresApi {
     }
 
     fun getUserPagination(pages: Int = 1, onResponse: (ResponseStatus<List<User>>) -> Unit) {
-//        val endpoint = "/users${if (pages > 1) pages else ""}"
-        val endpoint = "/unknown/23"
-        val request = NetworkClient.requestBuilder(endpoint)
-
+        val endpoint = "$usersEndpoint${if (pages > 1) "?page=$pages" else ""}"
+        val request = NetworkClient.requestBuilder(endpoint).build()
         NetworkClient
             .client
             .newCall(request)
@@ -69,32 +68,47 @@ class ReqresApi {
                         )
                     } else {
                         onResponse.invoke(
-                            ResponseStatus.Failed(response.code, "Something Went Wrong")
+                            ResponseStatus.Failed(response.code, "Failed")
                         )
                     }
                 }
             })
     }
 
-    fun getUserPaginationBasic(pages: Int = 1, onResponse: (JSONObject?, Throwable?) -> Unit) {
-        val endpoint = "/users${if (pages > 1) pages else ""}"
-        val request = NetworkClient.requestBuilder(endpoint)
+    fun addUser(data: AddUserModel, onResponse: (ResponseStatus<AddUserResponse>) -> Unit) {
+        val requestBody = JSONObject()
+            .put("name", data.name)
+            .put("job", data.job)
+            .toString()
+        val request = NetworkClient
+            .requestBuilder(usersEndpoint)
+            .method("POST", requestBody.toRequestBody())
+            .build()
         NetworkClient
             .client
             .newCall(request)
-            .enqueue(object : Callback {
+            .enqueue(object: Callback {
                 override fun onFailure(call: Call, e: IOException) {
-                    onResponse.invoke(null, e)
+                    onResponse.invoke(
+                        ResponseStatus.Failed(1, e.message.toString(), e)
+                    )
                 }
 
                 override fun onResponse(call: Call, response: Response) {
                     if (response.isSuccessful) {
-                        val body = JSONObject(response.body?.string() ?: "")
                         onResponse.invoke(
-                            body, null
+                            ResponseStatus.Success(
+                                AddUserResponse(
+                                    JSONObject(
+                                        response.body?.string().toString()
+                                    )
+                                )
+                            )
                         )
                     } else {
-                        onResponse.invoke(null, Throwable("something went wrong"))
+                        onResponse.invoke(
+                            ResponseStatus.Failed(response.code, "Failed")
+                        )
                     }
                 }
             })
