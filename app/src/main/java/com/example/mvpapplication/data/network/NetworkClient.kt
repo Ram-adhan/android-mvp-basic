@@ -1,7 +1,9 @@
 package com.example.mvpapplication.data.network
 
 import com.example.mvpapplication.BuildConfig
+import com.squareup.moshi.Moshi
 import okhttp3.*
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -18,23 +20,31 @@ class NetworkClient {
 
         }
 
-        val client: OkHttpClient =
+        val client: OkHttpClient by lazy {
             OkHttpClient
                 .Builder()
                 .addInterceptor(headerInterceptor)
                 .addInterceptor(
                     HttpLoggingInterceptor().apply {
-                        level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+                        level =
+                            if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
                     }
                 )
                 .callTimeout(timeout = 5L, unit = TimeUnit.SECONDS)
                 .connectTimeout(timeout = 2L, unit = TimeUnit.SECONDS)
                 .build()
+        }
 
-        fun requestBuilder(endpoint: String): Request.Builder =
-            Request
+        fun requestBuilder(endpoint: String, method: METHOD = METHOD.GET, jsonBody: String? = null): Request {
+            val request = Request
                 .Builder()
                 .url("$BASE_URL$endpoint")
+
+            if (jsonBody != null)
+                request.method(method.name, jsonBody.toRequestBody())
+
+            return request.build()
+        }
     }
 
     fun getAsync(endpoint: String, onSuccess: (Response) -> Unit) {
@@ -52,6 +62,11 @@ class NetworkClient {
                 onSuccess.invoke(response)
             }
         })
+    }
+
+    enum class METHOD {
+        GET,
+        POST
     }
 
     fun getSync(endpoint: String): Response {
