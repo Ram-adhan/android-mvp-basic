@@ -15,6 +15,7 @@ class MainPresenter(
     private val scope = CoroutineScope(supervisorJob + uiContext)
 
     override fun onAttach() {
+        getUsers()
         api.getError {
             scope.launch {
                 when (it) {

@@ -47,7 +47,7 @@ class NetworkClient {
         }
     }
 
-    fun getAsync(endpoint: String, onSuccess: (Response) -> Unit) {
+    fun getAsync(endpoint: String, callback: Callback) {
         val request = Request
             .Builder()
             .url("$BASE_URL$endpoint")
@@ -55,11 +55,12 @@ class NetworkClient {
 
         client.newCall(request = request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                throw e
+                callback.onFailure(call, e)
             }
 
             override fun onResponse(call: Call, response: Response) {
-                onSuccess.invoke(response)
+                callback.onResponse(call, response)
+                response.body?.close()
             }
         })
     }

@@ -8,8 +8,15 @@ data class UserPagination(
     val data: List<User> = listOf(),
     val page: Int = 0,
     @Json(name = "per_page")
-    val per_page: Int = 0,
+    val perPage: Int = 0,
     val total: Int = 0,
     @Json(name = "total_pages")
     val total_pages: Int = 0
 )
+
+val json = """
+    {
+        "data": "Halo"
+        "per_page": 2
+    }
+"""
