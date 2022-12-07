@@ -59,7 +59,6 @@ class ReqresApi {
                     if (response.isSuccessful) {
                         val userPagination = deserializeJson<UserPagination>(response.body?.string() ?: "") ?: UserPagination()
                         val adapter = MoshiExtension.moshi.adapter(UserPagination::class.java)
-                        val dataPagination: UserPagination = adapter.fromJson(response.body?.string() ?: "") ?: UserPagination()
                         onResponse.invoke(
                             ResponseStatus.Success(
                                 data = userPagination.data,
