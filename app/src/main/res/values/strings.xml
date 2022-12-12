@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MVP Application</string>
+    <string name="login_disclaimer">PT Bank Sephora Indonesia ("Bank Sephora") telah berlisensi oleh Bank Indonsia dan diawasi oleh Otoritas Jasa Keuangan (OJK) serta merupakan peserta dari Lembaga Penjamin Simpanan (LPS).</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Masuk</string>
 </resources>

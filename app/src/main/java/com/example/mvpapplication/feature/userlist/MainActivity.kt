@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         setContentView(binding.root)
 
         presenter = MainPresenter(this, ReqresApi()).apply {
-            onAttach()
+            onAttach(this@MainActivity)
         }
 
         binding.rvRecipes.apply {
