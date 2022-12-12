@@ -49,13 +49,31 @@ class LoginActivity : AppCompatActivity(), LoginView {
         binding.progressIndicator.isVisible = false
     }
 
-    override fun onError(message: String) {
-        AlertDialog.Builder(this)
-            .setMessage(message)
-            .setPositiveButton("Ok", this::dialogClickListener)
-            .setNegativeButton("Cancel", this::dialogClickListener)
-            .create()
-            .show()
+    override fun onError(code: Int, message: String) {
+        binding.tvErrorPassword.isVisible = false
+        when (code) {
+            in 0..9 -> {
+                binding.tvErrorPassword.text = message
+                binding.tvErrorPassword.isVisible = true
+            }
+            else -> {
+                AlertDialog.Builder(this)
+                    .setMessage(message)
+                    .setPositiveButton("Ok", this::dialogClickListener)
+                    .setNegativeButton("Cancel", this::dialogClickListener)
+                    .create()
+                    .show()
+            }
+        }
+    }
+
+    override fun resetPasswordError() {
+        binding.tvErrorPassword.isVisible = false
+    }
+
+    override fun onErrorPassword(visible: Boolean, message: String) {
+        binding.tvErrorPassword.text = message
+        binding.tvErrorPassword.isVisible = visible
     }
 
     private fun dialogClickListener(dialogInterface: DialogInterface, button: Int) {
