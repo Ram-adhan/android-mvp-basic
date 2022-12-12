@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MVPApplication">
         <activity
-            android:name=".feature.MainActivity"
+            android:name=".feature.userlist.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

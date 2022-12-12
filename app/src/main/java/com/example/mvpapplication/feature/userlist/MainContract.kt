@@ -1,13 +1,8 @@
-package com.example.mvpapplication.feature
+package com.example.mvpapplication.feature.userlist
 
 import com.example.mvpapplication.data.model.User
 
 interface MainContract {
-    interface Presenter {
-        fun onAttach()
-        fun onDetach()
-    }
-
     interface View {
         fun onLoading()
         fun onFinishedLoading()

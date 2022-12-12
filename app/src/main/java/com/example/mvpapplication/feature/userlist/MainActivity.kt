@@ -1,4 +1,4 @@
-package com.example.mvpapplication.feature
+package com.example.mvpapplication.feature.userlist
 
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
@@ -9,9 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mvpapplication.data.model.User
 import com.example.mvpapplication.data.network.api.ReqresApi
 import com.example.mvpapplication.databinding.ActivityMainBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), MainContract.View {
     private lateinit var binding: ActivityMainBinding

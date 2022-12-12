@@ -1,4 +1,4 @@
-package com.example.mvpapplication.feature
+package com.example.mvpapplication.feature.userlist
 
 import com.example.mvpapplication.data.model.AddUserModel
 import com.example.mvpapplication.data.network.ResponseStatus
@@ -10,11 +10,11 @@ class MainPresenter(
     private val view: MainContract.View,
     private val api: ReqresApi,
     uiContext: CoroutineContext = Dispatchers.Main
-):MainContract.Presenter {
+) {
     private val supervisorJob: Job = SupervisorJob()
     private val scope = CoroutineScope(supervisorJob + uiContext)
 
-    override fun onAttach() {
+    fun onAttach(view: MainContract.View) {
         getUsers()
         api.getError {
             scope.launch {
@@ -26,7 +26,7 @@ class MainPresenter(
         }
     }
 
-    override fun onDetach() {
+    fun onDetach() {
         scope.cancel()
     }
 
