@@ -80,8 +80,8 @@ class LoginPresenter(
 
     fun getUser() {
         view?.onLoading()
-        scope.launch {
-            userApi.getUser {
+        userApi.getUser {
+            scope.launch {
                 when(it) {
                     is ResponseStatus.Success -> view?.onSuccessGetUser(it.data)
                     is ResponseStatus.Failed -> view?.onError(it.code, it.message)
