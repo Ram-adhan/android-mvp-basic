@@ -2,13 +2,13 @@ package com.example.mvpapplication.feature.userlist
 
 import com.example.mvpapplication.data.model.AddUserModel
 import com.example.mvpapplication.data.network.ResponseStatus
-import com.example.mvpapplication.data.network.api.ReqresApi
+import com.example.mvpapplication.data.network.api.UserApi
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 class MainPresenter(
     private val view: MainContract.View,
-    private val api: ReqresApi,
+    private val api: UserApi,
     uiContext: CoroutineContext = Dispatchers.Main
 ) {
     private val supervisorJob: Job = SupervisorJob()

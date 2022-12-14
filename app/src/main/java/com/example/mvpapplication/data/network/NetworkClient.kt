@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 
 class NetworkClient {
     companion object {
-        const val BASE_URL = "https://reqres.in/api"
+        private const val BASE_URL = "https://reqres.in/api"
         private val headerInterceptor: Interceptor = Interceptor {
             val request = it.request().newBuilder()
             request
@@ -45,38 +45,16 @@ class NetworkClient {
 
             return request.build()
         }
-    }
 
-    fun getAsync(endpoint: String, callback: Callback) {
-        val request = Request
-            .Builder()
-            .url("$BASE_URL$endpoint")
-            .build()
-
-        client.newCall(request = request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                callback.onFailure(call, e)
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                callback.onResponse(call, response)
-                response.body?.close()
-            }
-        })
+        fun makeCallApi(endpoint: String, method: METHOD = METHOD.GET, jsonBody: String? = null): Call {
+            val request = requestBuilder(endpoint, method, jsonBody)
+            return client.newCall(request)
+        }
     }
 
     enum class METHOD {
         GET,
         POST
-    }
-
-    fun getSync(endpoint: String): Response {
-        val request = Request
-            .Builder()
-            .url("$BASE_URL$endpoint")
-            .build()
-
-        return client.newCall(request).execute()
     }
 
 }

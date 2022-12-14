@@ -6,13 +6,12 @@ import com.example.mvpapplication.data.model.User
 import com.example.mvpapplication.data.model.UserPagination
 import com.example.mvpapplication.data.network.*
 import okhttp3.*
-import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.IOException
 
-class ReqresApi {
+class UserApi {
     private val usersEndpoint = "/users"
-    fun getUser(onResponse: (ResponseStatus<User>) -> Unit) {
+    fun getUser(onResponse: (ResponseStatus<UserPagination>) -> Unit) {
         NetworkClient
             .client
             .newCall(
@@ -25,13 +24,16 @@ class ReqresApi {
 
                 override fun onResponse(call: Call, response: Response) {
                     if (response.isSuccessful) {
-                        val body = JSONObject(response.body?.string() ?: "")
-                        onResponse.invoke(
-                            ResponseStatus.Success(User(body))
-                        )
+//                        val body = JSONObject(response.body?.string() ?: "")
+                        val data = deserializeJson<UserPagination>(response.body?.string() ?: "")
+                        data?.let {
+                            onResponse.invoke(
+                                ResponseStatus.Success(data)
+                            )
+                        }
                     } else {
                         onResponse.invoke(
-                            ResponseStatus.Failed(response.code, "Failed")
+                            mapFailedResponse(response)
                         )
                     }
                 }
@@ -58,7 +60,6 @@ class ReqresApi {
                 override fun onResponse(call: Call, response: Response) {
                     if (response.isSuccessful) {
                         val userPagination = deserializeJson<UserPagination>(response.body?.string() ?: "") ?: UserPagination()
-                        val adapter = MoshiExtension.moshi.adapter(UserPagination::class.java)
                         onResponse.invoke(
                             ResponseStatus.Success(
                                 data = userPagination.data,
@@ -68,7 +69,7 @@ class ReqresApi {
                         )
                     } else {
                         onResponse.invoke(
-                            ResponseStatus.Failed(response.code, "Failed")
+                            mapFailedResponse(response)
                         )
                     }
                     response.body?.close()
@@ -125,15 +126,5 @@ class ReqresApi {
                     response.body?.close()
                 }
             })
-    }
-
-    private fun mapUsers(jsonObject: JSONObject): List<User> {
-        val usersArray = jsonObject.getJSONArray("data")
-        val resultData = mutableListOf<User>()
-        for (i in 0 until usersArray.length()) {
-            val obj = usersArray.getJSONObject(i)
-            resultData.add(User(obj))
-        }
-        return resultData
     }
 }

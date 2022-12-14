@@ -1,6 +1,21 @@
 package com.example.mvpapplication.feature.login
 
-class LoginPresenter {
+import com.example.mvpapplication.data.network.ResponseStatus
+import com.example.mvpapplication.data.network.api.CredentialApi
+import com.example.mvpapplication.data.network.api.UserApi
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
+
+class LoginPresenter(
+    private val credentialApi: CredentialApi,
+    private val userApi: UserApi,
+    private val uiContext: CoroutineContext = Dispatchers.Main
+) {
     companion object {
         const val PASSWORD_NOT_CONTAIN_LOWERCASE = 0
         const val PASSWORD_NOT_CONTAIN_NUMBER = 2
@@ -9,6 +24,8 @@ class LoginPresenter {
     }
 
     private var view: LoginView? = null
+    private var job = SupervisorJob()
+    private var scope = CoroutineScope(job + uiContext)
 
     fun onAttach(view: LoginView) {
         this.view = view
@@ -29,7 +46,7 @@ class LoginPresenter {
         view?.onErrorPassword(false, "")
 
         if (isPasswordValid && isUsernameValid) {
-            view?.onSuccessLogin()
+            view?.onSuccessLogin(userName, password)
         } else if (!isUsernameValid) {
             view?.onError(USERNAME_ERROR, "invalid username")
         } else {
@@ -43,6 +60,34 @@ class LoginPresenter {
         }
 
         view?.onFinishedLoading()
+    }
 
+    fun register(email: String, password: String) {
+        view?.onLoading()
+        scope.launch {
+            credentialApi
+                .registerUser(email, password)
+                .flowOn(Dispatchers.Default)
+                .collectLatest {
+                    when (it) {
+                        is ResponseStatus.Success -> view?.onSuccessRegister()
+                        is ResponseStatus.Failed -> view?.onError(it.code, it.message)
+                    }
+                    view?.onFinishedLoading()
+                }
+        }
+    }
+
+    fun getUser() {
+        view?.onLoading()
+        scope.launch {
+            userApi.getUser {
+                when(it) {
+                    is ResponseStatus.Success -> view?.onSuccessGetUser(it.data)
+                    is ResponseStatus.Failed -> view?.onError(it.code, it.message)
+                }
+                view?.onFinishedLoading()
+            }
+        }
     }
 }

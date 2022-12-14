@@ -7,7 +7,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mvpapplication.data.model.User
-import com.example.mvpapplication.data.network.api.ReqresApi
+import com.example.mvpapplication.data.network.api.UserApi
 import com.example.mvpapplication.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), MainContract.View {
@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        presenter = MainPresenter(this, ReqresApi()).apply {
+        presenter = MainPresenter(this, UserApi()).apply {
             onAttach(this@MainActivity)
         }
 

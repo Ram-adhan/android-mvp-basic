@@ -2,16 +2,21 @@ package com.example.mvpapplication.feature.login
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
+import com.example.mvpapplication.data.model.User
+import com.example.mvpapplication.data.model.UserPagination
+import com.example.mvpapplication.data.network.api.CredentialApi
+import com.example.mvpapplication.data.network.api.UserApi
 import com.example.mvpapplication.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity(), LoginView {
     private lateinit var binding: ActivityLoginBinding
-    private val presenter = LoginPresenter()
+    private val presenter = LoginPresenter(CredentialApi(), UserApi())
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -58,7 +63,7 @@ class LoginActivity : AppCompatActivity(), LoginView {
             }
             else -> {
                 AlertDialog.Builder(this)
-                    .setMessage(message)
+                    .setMessage("code: $code, $message")
                     .setPositiveButton("Ok", this::dialogClickListener)
                     .setNegativeButton("Cancel", this::dialogClickListener)
                     .create()
@@ -84,8 +89,22 @@ class LoginActivity : AppCompatActivity(), LoginView {
         }
     }
 
-    override fun onSuccessLogin() {
+    override fun onSuccessGetUser(user: UserPagination) {
+        AlertDialog.Builder(this)
+            .setMessage("user -> $user")
+            .setPositiveButton("Ok", this::dialogClickListener)
+            .setNegativeButton("Cancel", this::dialogClickListener)
+            .create()
+            .show()
+    }
+
+    override fun onSuccessLogin(username: String, password: String) {
         Toast.makeText(this, "Success Login", Toast.LENGTH_SHORT).show()
+        presenter.register(username, password)
+    }
+
+    override fun onSuccessRegister() {
+        Toast.makeText(this, "Success Register", Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroy() {
