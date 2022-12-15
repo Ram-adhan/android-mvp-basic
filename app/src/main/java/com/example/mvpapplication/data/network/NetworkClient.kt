@@ -2,12 +2,9 @@ package com.example.mvpapplication.data.network
 
 import com.example.mvpapplication.BuildConfig
 import com.example.mvpapplication.data.PrivateData
-import com.example.mvpapplication.data.network.api.interceptResponse
-import com.squareup.moshi.Moshi
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
-import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 class NetworkClient {
