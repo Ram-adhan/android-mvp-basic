@@ -17,17 +17,26 @@ import com.example.mvpapplication.databinding.ActivityLoginBinding
 class LoginActivity : AppCompatActivity(), LoginView {
     private lateinit var binding: ActivityLoginBinding
     private val presenter = LoginPresenter(CredentialApi(), UserApi())
+    private val viewModel: LoginViewModel by lazy {
+        LoginViewModel(CredentialApi())
+    }
     private val loadingHandler = LoadingHandler()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        presenter.onAttach(this)
+        initObserver()
+
+//        presenter.onAttach(this)
         loadingHandler.setup(createLoadingDialog())
 
         binding.btnLogin.setOnClickListener {
-            presenter.validateCredential(
+//            presenter.validateCredential(
+//                binding.edtUsername.text.toString(),
+//                binding.edtPassword.text.toString()
+//            )
+            viewModel.login(
                 binding.edtUsername.text.toString(),
                 binding.edtPassword.text.toString()
             )
@@ -40,6 +49,30 @@ class LoginActivity : AppCompatActivity(), LoginView {
         binding.edtPassword.doOnTextChanged { text, start, before, count ->
             validateInput()
         }
+    }
+
+    private fun initObserver() {
+        viewModel.state.observe(this) {
+            binding.progressIndicator.isVisible = it is LoginState.Loading
+            when (it) {
+                is LoginState.OnError -> {
+                    onError(-1, it.throwable.message ?: "Unknown Error")
+                }
+                is LoginState.OnSuccessLogin -> {
+                    doOnSuccessLogin()
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun doOnSuccessLogin() {
+        AlertDialog.Builder(this)
+            .setMessage("Sukses Login")
+            .setPositiveButton("Ok", this::dialogClickListener)
+            .setNegativeButton("Cancel", this::dialogClickListener)
+            .create()
+            .show()
     }
 
     private fun validateInput() {
