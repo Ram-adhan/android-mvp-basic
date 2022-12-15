@@ -14,11 +14,9 @@ import kotlin.coroutines.CoroutineContext
 class LoginPresenter(
     private val credentialApi: CredentialApi,
     private val userApi: UserApi,
-    private val uiContext: CoroutineContext = Dispatchers.Main
+    uiContext: CoroutineContext = Dispatchers.Main
 ) {
     companion object {
-        const val PASSWORD_NOT_CONTAIN_LOWERCASE = 0
-        const val PASSWORD_NOT_CONTAIN_NUMBER = 2
         const val PASSWORD_ERROR = 9
         const val USERNAME_ERROR = 10
     }
