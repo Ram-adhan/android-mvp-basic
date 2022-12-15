@@ -1,6 +1,8 @@
 package com.example.mvpapplication.data.network
 
 import com.example.mvpapplication.BuildConfig
+import com.example.mvpapplication.data.PrivateData
+import com.example.mvpapplication.data.network.api.interceptResponse
 import com.squareup.moshi.Moshi
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -11,13 +13,14 @@ import java.util.concurrent.TimeUnit
 class NetworkClient {
     companion object {
         private const val BASE_URL = "https://reqres.in/api"
+
         private val headerInterceptor: Interceptor = Interceptor {
             val request = it.request().newBuilder()
             request
                 .addHeader("Content-Type", "application/json")
+                .addHeader("Token", PrivateData.token)
 
             return@Interceptor it.proceed(request.build())
-
         }
 
         val client: OkHttpClient by lazy {
@@ -49,6 +52,21 @@ class NetworkClient {
         fun makeCallApi(endpoint: String, method: METHOD = METHOD.GET, jsonBody: String? = null): Call {
             val request = requestBuilder(endpoint, method, jsonBody)
             return client.newCall(request)
+        }
+
+        fun executeCall(endpoint: String, method: METHOD = METHOD.GET, jsonBody: String? = null): Response {
+            val request = requestBuilder(endpoint, method, jsonBody)
+            return try {
+                val response = client.newCall(request).execute()
+                interceptResponse(response)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+
+        private fun interceptResponse(response: Response): Response {
+            PrivateData.token = response.header("Token", "").toString()
+            return response
         }
     }
 
