@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.serialization'
     id 'com.google.gms.google-services'
 }
 
@@ -17,6 +18,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "RAWG_URL", RAWG_URL
+        buildConfigField "String", "RESTFUL_DEV_URL", RESTFUL_DEV_URL
     }
 
     buildTypes {
