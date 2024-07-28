@@ -1,4 +1,4 @@
-package com.example.mvpapplication
+package com.example.mvpapplication.features
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
