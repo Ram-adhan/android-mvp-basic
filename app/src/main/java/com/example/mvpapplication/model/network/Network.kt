@@ -1,9 +1,11 @@
 package com.example.mvpapplication.model.network
 
 import android.icu.util.TimeZone
+import android.os.Build
 import com.example.mvpapplication.BuildConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpSend
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -11,6 +13,7 @@ import io.ktor.client.plugins.logging.ANDROID
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.plugin
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
@@ -43,8 +46,16 @@ object Network {
             }
             defaultRequest {
                 headers {
-                    append("Time-Zone", TimeZone.getDefault().getDisplayName(false, TimeZone.SHORT))
+                    append("Time-Zone", java.util.TimeZone.getDefault().getDisplayName(false, java.util.TimeZone.SHORT))
                 }
+            }
+        }.also {
+            it.plugin(HttpSend).intercept { request ->
+                //Add header with interceptor
+                request.headers {
+                    append("Device-Detail", "${Build.DEVICE}:${Build.MANUFACTURER}:${Build.MODEL}|android:${Build.VERSION.SDK_INT},${Build.VERSION.RELEASE}")
+                }
+                execute(request)
             }
         }
     }
