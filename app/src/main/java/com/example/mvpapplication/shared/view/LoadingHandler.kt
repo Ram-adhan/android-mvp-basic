@@ -12,13 +12,14 @@ import com.example.mvpapplication.R
 
 interface LoadingHandler {
     fun initializeLoadingDialog(context: AppCompatActivity)
+
     fun showProgress()
+
     fun dismissProgress()
+
     fun setProgressVisibility(isVisible: Boolean)
 
-    fun stackProgress(isAdd: Boolean = true) {
-
-    }
+    fun stackProgress(isAdd: Boolean = true) {}
 }
 
 class LoadingHandlerImpl : LoadingHandler, LifecycleEventObserver {

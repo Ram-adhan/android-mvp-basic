@@ -5,4 +5,5 @@ import com.example.mvpapplication.shared.arch.BaseView
 
 interface MainView: BaseView {
     fun onSuccessGetObjects(objects: List<RestDevObject>)
+    fun onSuccessAddObject(objects: RestDevObject)
 }

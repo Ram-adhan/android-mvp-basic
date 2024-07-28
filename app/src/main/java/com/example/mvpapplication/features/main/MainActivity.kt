@@ -1,8 +1,9 @@
 package com.example.mvpapplication.features.main
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.mvpapplication.databinding.ActivityMainBinding
 import com.example.mvpapplication.model.dto.RestDevObject
 import com.example.mvpapplication.model.network.Network
@@ -15,6 +16,7 @@ class MainActivity : AppCompatActivity(), MainView, LoadingHandler by LoadingHan
     private val presenter: MainPresenter by lazy {
         MainPresenter(RESTfulDevService(Network.client))
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -22,11 +24,11 @@ class MainActivity : AppCompatActivity(), MainView, LoadingHandler by LoadingHan
         setContentView(binding.root)
         initializeLoadingDialog(this)
         presenter.onAttach(this)
+
+        binding.btnPost.setOnClickListener { presenter.onClickPost() }
     }
 
-    override fun onAttached() {
-
-    }
+    override fun onAttached() {}
 
     override fun onLoading() {
         stackProgress()
@@ -40,7 +42,12 @@ class MainActivity : AppCompatActivity(), MainView, LoadingHandler by LoadingHan
         Log.d("MainActivity", "success get object: $objects")
     }
 
+    override fun onSuccessAddObject(objects: RestDevObject) {
+        Log.d("MainActivity", "success add object: $objects")
+    }
+
     override fun onFailed(message: String) {
-        Log.d("MainActivity", "error: $message")
+        Toast.makeText(this, "error: $message", Toast.LENGTH_SHORT).show()
+        Log.e("MainActivity", message)
     }
 }
