@@ -12,42 +12,40 @@ import com.example.mvpapplication.shared.view.LoadingHandler
 import com.example.mvpapplication.shared.view.LoadingHandlerImpl
 
 class MainActivity : AppCompatActivity(), MainView, LoadingHandler by LoadingHandlerImpl() {
-    private lateinit var binding: ActivityMainBinding
-    private val presenter: MainPresenter by lazy {
-        MainPresenter(RESTfulDevService(Network.client))
-    }
+  private lateinit var binding: ActivityMainBinding
+  private val presenter: MainPresenter by lazy { MainPresenter(RESTfulDevService(Network.client)) }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        initializeLoadingDialog(this)
-        presenter.onAttach(this)
+    binding = ActivityMainBinding.inflate(layoutInflater)
+    setContentView(binding.root)
+    initializeLoadingDialog(this)
+    presenter.onAttach(this)
 
-        binding.btnPost.setOnClickListener { presenter.onClickPost() }
-    }
+    binding.btnPost.setOnClickListener { presenter.onClickPost() }
+  }
 
-    override fun onAttached() {}
+  override fun onAttached() {}
 
-    override fun onLoading() {
-        stackProgress()
-    }
+  override fun onLoading() {
+    stackProgress()
+  }
 
-    override fun onFinishLoading() {
-        stackProgress(false)
-    }
+  override fun onFinishLoading() {
+    stackProgress(false)
+  }
 
-    override fun onSuccessGetObjects(objects: List<RestDevObject>) {
-        Log.d("MainActivity", "success get object: $objects")
-    }
+  override fun onSuccessGetObjects(objects: List<RestDevObject>) {
+    Log.d("MainActivity", "success get object: $objects")
+  }
 
-    override fun onSuccessAddObject(objects: RestDevObject) {
-        Log.d("MainActivity", "success add object: $objects")
-    }
+  override fun onSuccessAddObject(objects: RestDevObject) {
+    Log.d("MainActivity", "success add object: $objects")
+  }
 
-    override fun onFailed(message: String) {
-        Toast.makeText(this, "error: $message", Toast.LENGTH_SHORT).show()
-        Log.e("MainActivity", message)
-    }
+  override fun onFailed(message: String) {
+    Toast.makeText(this, "error: $message", Toast.LENGTH_SHORT).show()
+    Log.e("MainActivity", message)
+  }
 }

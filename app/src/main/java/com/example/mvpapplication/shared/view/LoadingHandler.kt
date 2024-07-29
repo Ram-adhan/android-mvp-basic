@@ -11,66 +11,66 @@ import androidx.lifecycle.LifecycleOwner
 import com.example.mvpapplication.R
 
 interface LoadingHandler {
-    fun initializeLoadingDialog(context: AppCompatActivity)
+  fun initializeLoadingDialog(context: AppCompatActivity)
 
-    fun showProgress()
+  fun showProgress()
 
-    fun dismissProgress()
+  fun dismissProgress()
 
-    fun setProgressVisibility(isVisible: Boolean)
+  fun setProgressVisibility(isVisible: Boolean)
 
-    fun stackProgress(isAdd: Boolean = true) {}
+  fun stackProgress(isAdd: Boolean = true) {}
 }
 
 class LoadingHandlerImpl : LoadingHandler, LifecycleEventObserver {
-    private var loadingDialog: Dialog? = null
-    private var progressStack: Int = 0
-        set(value) {
-            field = value
-            if (value > 0) showProgress() else dismissProgress()
-        }
-
-    override fun initializeLoadingDialog(context: AppCompatActivity) {
-        loadingDialog = Dialog(context)
-        loadingDialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        loadingDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        loadingDialog?.setContentView(R.layout.loading_layout)
-        loadingDialog?.setCancelable(false)
-
-        context.lifecycle.addObserver(this)
+  private var loadingDialog: Dialog? = null
+  private var progressStack: Int = 0
+    set(value) {
+      field = value
+      if (value > 0) showProgress() else dismissProgress()
     }
 
-    override fun showProgress() {
-        loadingDialog?.show()
-    }
+  override fun initializeLoadingDialog(context: AppCompatActivity) {
+    loadingDialog = Dialog(context)
+    loadingDialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
+    loadingDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+    loadingDialog?.setContentView(R.layout.loading_layout)
+    loadingDialog?.setCancelable(false)
 
-    override fun dismissProgress() {
-        loadingDialog?.dismiss()
-    }
+    context.lifecycle.addObserver(this)
+  }
 
-    override fun setProgressVisibility(isVisible: Boolean) {
-        if (isVisible) {
-            showProgress()
-        } else {
-            dismissProgress()
-        }
-    }
+  override fun showProgress() {
+    loadingDialog?.show()
+  }
 
-    override fun stackProgress(isAdd: Boolean) {
-        if (isAdd) {
-            progressStack++
-        } else {
-            progressStack--
-            if (progressStack < 1) {
-                progressStack = 0
-            }
-        }
-    }
+  override fun dismissProgress() {
+    loadingDialog?.dismiss()
+  }
 
-    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        when (event) {
-            Lifecycle.Event.ON_DESTROY -> loadingDialog?.dismiss()
-            else -> {}
-        }
+  override fun setProgressVisibility(isVisible: Boolean) {
+    if (isVisible) {
+      showProgress()
+    } else {
+      dismissProgress()
     }
+  }
+
+  override fun stackProgress(isAdd: Boolean) {
+    if (isAdd) {
+      progressStack++
+    } else {
+      progressStack--
+      if (progressStack < 1) {
+        progressStack = 0
+      }
+    }
+  }
+
+  override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+    when (event) {
+      Lifecycle.Event.ON_DESTROY -> loadingDialog?.dismiss()
+      else -> {}
+    }
+  }
 }

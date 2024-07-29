@@ -1,6 +1,5 @@
 package com.example.mvpapplication.model.network
 
-import android.icu.util.TimeZone
 import android.os.Build
 import com.example.mvpapplication.BuildConfig
 import io.ktor.client.HttpClient
@@ -25,46 +24,56 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 object Network {
-    var RAWG_API_KEY = ""
+  var RAWG_API_KEY = ""
 
-    val client: HttpClient by lazy {
-        HttpClient(CIO) {
-            install(Logging) {
-                logger = Logger.ANDROID
-                level = if (BuildConfig.DEBUG) LogLevel.ALL else LogLevel.NONE
-            }
-            install(ContentNegotiation) {
-                json(
-                    Json {
-                        prettyPrint = true
-                        ignoreUnknownKeys = true
-                    })
-            }
-            install(HttpTimeout) {
-                connectTimeoutMillis = 10_000
-                requestTimeoutMillis = 50_000
-            }
-            defaultRequest {
-                headers {
-                    append("Time-Zone", java.util.TimeZone.getDefault().getDisplayName(false, java.util.TimeZone.SHORT))
-                }
-            }
-        }.also {
-            it.plugin(HttpSend).intercept { request ->
-                //Add header with interceptor
-                request.headers {
-                    append("Device-Detail", "${Build.DEVICE}:${Build.MANUFACTURER}:${Build.MODEL}|android:${Build.VERSION.SDK_INT},${Build.VERSION.RELEASE}")
-                }
-                execute(request)
-            }
+  val client: HttpClient by lazy {
+    HttpClient(CIO) {
+        install(Logging) {
+          logger = Logger.ANDROID
+          level = if (BuildConfig.DEBUG) LogLevel.ALL else LogLevel.NONE
         }
-    }
+        install(ContentNegotiation) {
+          json(
+            Json {
+              prettyPrint = true
+              ignoreUnknownKeys = true
+            }
+          )
+        }
+        install(HttpTimeout) {
+          connectTimeoutMillis = 10_000
+          requestTimeoutMillis = 50_000
+        }
+        defaultRequest {
+          headers {
+            append(
+              "Time-Zone",
+              java.util.TimeZone.getDefault().getDisplayName(false, java.util.TimeZone.SHORT),
+            )
+          }
+        }
+      }
+      .also {
+        it.plugin(HttpSend).intercept { request ->
+          // Add header with interceptor
+          request.headers {
+            append(
+              "Device-Detail",
+              "${Build.DEVICE}:${Build.MANUFACTURER}:${Build.MODEL}|android:${Build.VERSION.SDK_INT},${Build.VERSION.RELEASE}",
+            )
+          }
+          execute(request)
+        }
+      }
+  }
 }
 
 suspend fun HttpClient.postJson(
-    urlString: String,
-    block: HttpRequestBuilder.() -> Unit = {}
+  urlString: String,
+  block: HttpRequestBuilder.() -> Unit = {},
 ): HttpResponse = post {
-    url(urlString)
-    block().apply { contentType(ContentType.Application.Json) }
+  url(urlString)
+  block().apply { contentType(ContentType.Application.Json) }
 }
+
+data class ResponseFailure(val code: String, override val message: String) : Throwable()

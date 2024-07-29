@@ -7,7 +7,4 @@ data class RestDevObject(val id: String, val name: String, val createdAt: String
 
 @Serializable data class RestDevObjectRequest<T : Any>(val name: String, val data: T)
 
-@Serializable
-data class Detail(
-    val capacity: String,
-)
+@Serializable data class Detail(val capacity: String)
