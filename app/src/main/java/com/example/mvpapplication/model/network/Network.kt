@@ -75,5 +75,3 @@ suspend fun HttpClient.postJson(
   url(urlString)
   block().apply { contentType(ContentType.Application.Json) }
 }
-
-data class ResponseFailure(val code: String, override val message: String) : Throwable()
